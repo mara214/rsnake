@@ -50,22 +50,13 @@ impl Game {
         self.paused = false;
     }
 
-    pub fn pause(&mut self) {
-        self.paused = true;
+    pub fn toggle_game_state(&mut self) {
+        self.paused = !self.paused;
     }
-
-    // pub fn toggle_game_state(&mut self) {
-    //     if self.paused {
-    //         self.start();
-    //     } else {
-    //         self.pause();
-    //     }
-    // }
 
     pub fn draw(&self, ctx: Context, g: &mut G2d) {
         draw_block(&ctx, g, colors::FRUIT, &self.fruit);
         self.snake.draw(&ctx, g);
-        // draw_text(&ctx, g, colors::SCORE, self.score.to_string());
 
         if self.over {
             draw_overlay(&ctx, g, colors::OVERLAY, self.size)
@@ -74,13 +65,6 @@ impl Game {
 
     pub fn update(&mut self, delta_time: f64) {
         self.waiting_time += delta_time;
-
-        // if self.over {
-        // if self.waiting_time > RESTART_TIME {
-        //     self.restart();
-        // }
-        // return;
-        // }
 
         if self.waiting_time > fps_in_ms(FPS) && !self.over && !self.paused {
             // self.check_colision() use snake.get_head_pos;
@@ -104,17 +88,15 @@ impl Game {
     pub fn key_down(&mut self, key: keyboard::Key) {
         use keyboard::Key;
 
-        // match key {
-        //     Key::R => self.over = false, // temp solution -> replace current game state trough new one
-        //     Key::Space => self.toggle_game_state(),
-        //     _ => self.start(),
-        // }
-
         match key {
             Key::A | Key::Left => self.snake.set_dir(Direction::Left),
             Key::W | Key::Up => self.snake.set_dir(Direction::Up),
             Key::D | Key::Right => self.snake.set_dir(Direction::Right),
             Key::S | Key::Down => self.snake.set_dir(Direction::Down),
+            Key::R => *self = Game::new(self.size.0, self.size.1), // restart
+            Key::Escape => self.toggle_game_state(),
+            Key::Space => self.paused = false,
+            Key::Q => std::process::exit(0),
             _ => {}
         }
     }
@@ -124,7 +106,7 @@ impl Game {
     }
 
     fn calc_score(&mut self) {
-        self.score = (self.snake.get_len() * 10) as u32
+        self.score = (self.snake.get_len()) as u32
     }
 
     // IMPORTANT!! -

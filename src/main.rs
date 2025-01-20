@@ -39,7 +39,7 @@ fn main() {
         .for_folder("assets")
         .unwrap();
     let ref font = assets.join("retro-gaming.ttf");
-    let factory = window.factory.clone();
+    let _factory = window.factory.clone();
     let mut glyphs = Glyphs::new(font, TextureContext {
         factory: window.factory.clone(),
         encoder: window.factory.create_command_buffer().into(),
@@ -55,17 +55,21 @@ fn main() {
 
         window.draw_2d(&event, |ctx, g, _| {
             clear(colors::BACKGROUND, g);
+        
+            // Render the current score in the top-left corner
             text::Text::new_color(colors::SCORE, 20)
                 .draw(
-                    main.get_score().to_string().as_ref(),
+                    format!("{}", main.get_score()).as_str(),
                     &mut glyphs,
                     &ctx.draw_state,
-                    ctx.transform.trans(0.0, 20.0),
+                    ctx.transform.trans(10.0, 30.0),
                     g,
                 )
                 .unwrap();
+        
             main.draw(ctx, g);
         });
+        
 
         event.update(|arg| {
             main.update(arg.dt);
