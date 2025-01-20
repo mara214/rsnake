@@ -31,15 +31,6 @@ impl Snake {
         }
     }
 
-    // pub fn dir(&self) -> Direction {
-    //     self.direction
-    // }
-
-    // pub fn r#move(&mut self) {}
-
-    // pub fn grow(&mut self, x: u32, y: u32) {
-    //     self.tail.push_back(Position { x, y })
-    // }
     pub fn update(&mut self, width: u32, height: u32) {
         if self.tail.len() > 0 {
             self.tail.push_front(self.head.clone());
